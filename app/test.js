@@ -3,9 +3,21 @@
 
 
 
-url = '/system/role/list'
+let list = [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+]
 
-newUrl = 
-console.log(newUrl)
 
-
+console.log(list.toString())

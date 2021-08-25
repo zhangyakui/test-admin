@@ -24,10 +24,14 @@ module.exports = app => {
 
   // 角色管理
   router.get('/system/role/list', controller.system.role.list);
+  router.get('/system/role/mlist', controller.system.role.mlist);
   router.post('/system/role/add', controller.system.role.add);
+  router.post('/system/role/edit', controller.system.role.edit);
+  router.post('/system/role/delete', controller.system.role.delete);
 
 
   // 权限管理
+  router.get('/system/menu/list', controller.system.menu.list);
 
 
 

@@ -72,7 +72,8 @@ module.exports = appInfo => {
   };
   
   // add your middleware config here
-  config.middleware = ['auth'];
+  // config.middleware = ['auth'];
+  config.middleware = [];
 
   // 用户请求权限对象
   config.userPermission = {}
