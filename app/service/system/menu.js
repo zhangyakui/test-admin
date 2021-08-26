@@ -86,10 +86,17 @@ module.exports = app => {
           menus.push(menuObj)
       }
       return {
-        code: 0,
+        code: 200,
         data: menus
       }
     }
+
+    // 新增
+
+    // 修改
+
+    // 删除
+    
   }
   return MenuService
 }

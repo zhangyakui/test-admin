@@ -1,41 +1,33 @@
 module.exports = app => {
   class RoleController extends app.Controller {
-    // 列表
+    // 列表 type: role角色信息 / perm权限信息
     async list(){
-        this.ctx.body = await this.service.system.role.list()
-    }
-
-    // 权限映射列表
-    async mlist(){
-      const query = this.ctx.request.query
-      this.ctx.validate({
-        rid: {
-          type: 'number',
-          required: true,
-          desc: '序列'
-        },
-        type: {
-          type: 'number',
-          min:0,
-          max:1,
-          required: true,
-          desc: '类型'
-        }
-      }, query)
-
-      this.ctx.body = await this.service.system.role.mlist(query)
+        const query = this.ctx.request.query
+        this.ctx.validate({
+          type: {
+            type: 'enum',
+            values: ['role', 'perm'],
+            required: true
+          },
+          rid: {
+            type: 'string',
+            required: false,
+            desc: '序列'
+          }
+        }, query)
+        this.ctx.body = await this.service.system.role.list(query)
     }
 
     // 新增
     async add(){
       this.ctx.validate({
           pid: {
-              type: 'number',
+              type: 'string',
               required: true,
               desc: '父级id'
           },
           type: {
-              type: 'number',
+              type: 'string',
               min:0,
               max:1,
               required: true,
@@ -65,12 +57,12 @@ module.exports = app => {
     async edit(){
       this.ctx.validate({
         rid: {
-          type: 'number',
+          type: 'string',
           required: true,
           desc: '序列'
         },
         type: {
-          type: 'number',
+          type: 'string',
           min:0,
           max:1,
           required: true,
@@ -100,12 +92,12 @@ module.exports = app => {
     async delete(){
       this.ctx.validate({
         rid: {
-          type: 'number',
+          type: 'string',
           required: true,
           desc: '序列'
         },
         type: {
-          type: 'number',
+          type: 'string',
           min:0,
           max:1,
           required: true,

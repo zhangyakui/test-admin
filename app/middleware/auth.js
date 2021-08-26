@@ -13,7 +13,15 @@ module.exports = app => {
                         return
                     }
                     ctx.account=decoded.account// 把接口带来的用户名存在ctx上，方便后续做判断。
-                    
+                    // 判断该账号是否在登录列表里(未登录/修改过密码)
+                    if (!ctx.app.config.userPermission[ctx.account]){
+                        ctx.body={
+                            code: 401,
+                            msg: 'token已过期'
+                        }
+                        return
+                    }
+
                     console.log('========== 鉴权 ==========\n-->> 用户: ', ctx.account, '\n-->> 接口: ', ctx.request.url, '\n========== 鉴权 ==========')
 
                     // 接口鉴权 除超级管理员以外的所有账号
