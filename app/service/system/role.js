@@ -37,7 +37,7 @@ module.exports = app => {
           }
           data.push(roleObj)
         }
-      }else if(type == 'perm'){// 权限信息
+      }else if((type == 'perm') && rid){// 权限信息
         const rmData = await this.app.model.SysRoleMenu.findAll({
           where: {
             rid: rid
@@ -65,32 +65,19 @@ module.exports = app => {
 
     // 新增 部门新增, 职位需新增关系映射
     async add(body){
-      const {pid, type, name, mlist, desc} = body
-      // 查询 名称是否存在
-      const isExists = await this.app.model.SysRole.findOne({
-        where:{
-          name: name
-        }
-      })
-
-      // 名称存在
-      if (isExists){
+      const {type, name, mlist} = body
+      // 新增角色信息
+      try{
+        await this.app.model.SysRole.create(body)
+      }catch{
         return {
           code: 201,
-          msg: '新增失败, 名称已存在'
+          msg: '新增失败, 部门/职位已存在'
         }
       }
 
-      // 新增角色信息
-      await this.app.model.SysRole.create({
-        pid: pid,
-        type: type,
-        name: name,
-        desc: desc
-      })
-
       // 判断如果是角色, 新增映射信息
-      if ((type == 1) && mlist){
+      if (type == 1){
         // 查询 新增角色 pid 
         const {rid} = await this.app.model.SysRole.findOne({
           where: {
@@ -101,7 +88,6 @@ module.exports = app => {
 
         // 新增映射
         JSON.parse(mlist).forEach(async mid => {
-          console.log('新增映射: ',rid, '----', mid)
           await this.app.model.SysRoleMenu.create({
             rid: rid,
             mid: mid
@@ -117,7 +103,7 @@ module.exports = app => {
 
     // 修改
     async edit(body){
-      const {rid, type, name, desc, mlist} = body
+      const {rid, type, mlist} = body
       // 查询数据是否存在
       const role = await this.app.model.SysRole.findByPk(rid)
 
@@ -128,28 +114,15 @@ module.exports = app => {
         }
       }
 
-      // 检查是否需要修改名称
-      if ((name) && (role.name != name)){
-        // 查询 名称是否存在
-        const role2 = await this.app.model.SysRole.findOne({
-          where:{
-            name: name
-          }
-        })
-
-        if (role2){
-          return {
-            code: 201,
-            msg: '修改失败, 名称已存在'
-          }
+      // 修改 角色信息
+      try{
+        await role.update(body)
+      }catch{
+        return {
+          code: 201,
+          msg: '修改失败, 字段重复'
         }
       }
-      
-      // 修改 角色信息
-      await role.update({
-        name: name,
-        desc: desc
-      })
 
       // 删除并重建映射关系
       if ((mlist) && (type == 1)){

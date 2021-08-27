@@ -34,37 +34,33 @@ module.exports = app => {
     // 新增
     async add(body){
       const {account, password, rid} = body
-      // 查询用户是否已新增
-      const user = await this.app.model.SysUser.findOne({
-        where: {
-          account: account
-        }
-      })
-
-      // 已新增返回 新增失败
-      if (user){
-        return {
-          code: 201,
-          msg: '新增失败, 账号已存在'
-        }
-      }
 
       // 新增用户
       body.password = this.ctx.helper.encrypt(password)// 加密
       body.isAdmin = 2// 普通管理员
-      await this.app.model.SysUser.create(body)
+
+      try{
+        await this.app.model.SysUser.create(body)
+      }catch{
+        return {
+          code: 201,
+          msg: '新增失败, 用户已存在'
+        }
+      }
 
       // 写入用户角色关系表
-      const {uid} = await this.app.model.SysUser.findOne({
-        where: {
-          account: account
-        }
-      })
+      if (rid){
+        const {uid} = await this.app.model.SysUser.findOne({
+          where: {
+            account: account
+          }
+        })
 
-      await this.app.model.SysUserRole.create({
-        uid: uid,
-        rid: rid
-      })
+        await this.app.model.SysUserRole.create({
+          uid: uid,
+          rid: rid
+        })
+      }
 
       return {
         code: 200,
@@ -82,14 +78,15 @@ module.exports = app => {
       if (!user){
         return {
           code: 404,
-          msg: '修改失败, 数据不存在'
+          msg: '修改失败, 用户不存在'
         }
       }
 
-      // 判断密码是否修改
       if (phone) update.phone = phone
-      if (enable) update.enable = enable
+      if (enable != undefined) update.enable = enable
       if (desc) update.desc = desc
+
+      // 判断密码是否修改
       let isChangePwd = false
       if (password){
         const flag = this.ctx.helper.decrypt(password, user.password)// 是否修改密码
@@ -102,20 +99,22 @@ module.exports = app => {
       await user.update(update)
 
       // 修改 用户角色映射
-      const ur = await this.app.model.SysUserRole.findOne({
-        where: {
-          uid: uid
-        }
-      })
+      if (rid){
+        const ur = await this.app.model.SysUserRole.findOne({
+          where: {
+            uid: uid
+          }
+        })
 
-      if (ur){// 修改
-        await ur.update({rid: rid})
-      }else{// 新增
-        await this.app.model.SysUserRole.create({uid: uid, rid: rid})
-      }
-      
-      if ((isChangePwd) && app.config.userPermission[user.account]){// 清除登录记录
-        delete app.config.userPermission[user.account]
+        if (ur){// 修改
+          await ur.update({rid: rid})
+        }else{// 新增
+          await this.app.model.SysUserRole.create({uid: uid, rid: rid})
+        }
+        
+        if ((isChangePwd) && app.config.userPermission[user.account]){// 清除登录记录
+          delete app.config.userPermission[user.account]
+        }
       }
 
       return {
@@ -127,13 +126,11 @@ module.exports = app => {
     // 删除
     async delete(body){
       const {uid} = body
-
-      // 用户是否存在
       const user = await this.app.model.SysUser.findByPk(uid)
       if (!user){
         return {
           code: 404,
-          msg: '删除失败, 数据不存在'
+          msg: '修改失败, 用户不存在'
         }
       }
 
@@ -141,7 +138,9 @@ module.exports = app => {
 
       // 删除用户角色映射
       const ur = await this.app.model.SysUserRole.findOne({
-        uid: uid
+        where: {
+          uid: uid
+        }
       })
 
       if (ur) await ur.destroy()

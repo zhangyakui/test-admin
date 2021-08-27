@@ -27,6 +27,9 @@ module.exports = app => {
 
   // 权限管理
   router.get('/system/menu/list', controller.system.menu.list);
+  router.post('/system/menu/add', controller.system.menu.add);
+  router.post('/system/menu/edit', controller.system.menu.edit);
+  router.post('/system/menu/delete', controller.system.menu.delete);
 
 
 

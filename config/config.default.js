@@ -72,7 +72,7 @@ module.exports = appInfo => {
   };
   
   // add your middleware config here
-  config.middleware = ['auth'];
+  config.middleware = ['parameter'];
   // config.middleware = [];
 
   // 用户请求权限对象
