@@ -48,13 +48,16 @@ module.exports = appInfo => {
       enable: false,
       ignoreJSON: true,
       // 白名单
-      domainWhiteList: [ 'http://localhost:8080' ]
+      domainWhiteList: [ 'http://localhost:8081' ]
     }
   };
 
   // 跨域
   config.cors = {
-    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS'
+    origin: '*',
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',
+    // 下面这条加上才能共享跨域session，同时前端ajax请求也要加上响应的参数
+    credentials: true, 
   };
 
   // jwt验证
@@ -72,7 +75,7 @@ module.exports = appInfo => {
   };
   
   // add your middleware config here
-  config.middleware = ['parameter'];
+  config.middleware = ['auth', 'parameter'];
   // config.middleware = [];
 
   // 用户请求权限对象

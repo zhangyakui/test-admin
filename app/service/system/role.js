@@ -19,9 +19,11 @@ module.exports = app => {
         for (let i=0; i<_dept.length; i++){// 遍历部门
           let roleObj = {
             rid: _dept[i].rid,
+            pid: _dept[i].pid,
             type: _dept[i].type,
             name: _dept[i].name,
             desc: _dept[i].desc,
+            createTime: _dept[i].createTime,
             children: []
           }
           let rid = _dept[i].rid
@@ -29,9 +31,11 @@ module.exports = app => {
             if (_job[j].pid == rid){
               roleObj.children.push({
                 rid: _job[j].rid,
+                pid: _job[j].pid,
                 type: _job[j].type,
                 name: _job[j].name,
                 desc: _job[j].desc,
+                createTime: _job[j].createTime
               })
             }
           }

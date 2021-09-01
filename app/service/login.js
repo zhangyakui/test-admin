@@ -140,10 +140,13 @@ module.exports = app => {
 
             return {
                 code: 200,
+                msg: '登录成功',
                 data: {
                     user: {
                         uid: user.uid,
                         username: user.username,
+                        account: user.account,
+                        isAdmin: user.isAdmin == 1 ? true: false,
                         gender: user.gender,
                         phone: user.phone,
                         avatarPath: user.avatarPath

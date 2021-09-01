@@ -33,6 +33,7 @@ module.exports = app => {
       for (let i=0; i<_list.length; i++){// 遍历 目录
           let menuObj = {
             mid: _list[i].mid,
+            pid: _list[i].pid,
             type: _list[i].type,
             title: _list[i].title,
             name: _list[i].name,
@@ -42,6 +43,7 @@ module.exports = app => {
             cache: _list[i].cache,
             permission: _list[i].permission,
             sortId: _list[i].sortId,
+            createTime: _list[i].createTime,
             children: []
           }
           let listMid = _list[i].mid
@@ -50,6 +52,7 @@ module.exports = app => {
             if (listMid == _menus[j].pid){// 菜单pid = 目录mid 
               let subObj = {
                 mid: _menus[j].mid,
+                pid: _menus[j].pid,
                 type: _menus[j].type,
                 title: _menus[j].title,
                 name: _menus[j].name,
@@ -59,6 +62,7 @@ module.exports = app => {
                 cache: _menus[j].cache == 0 ? false : true,
                 permission: _menus[j].permission,
                 sortId: _menus[j].sortId,
+                createTime: _menus[j].createTime,
                 children: []
               }
 
@@ -67,7 +71,9 @@ module.exports = app => {
               for (let k=0; k<_buttons.length; k++){// 遍历按钮
                   if (menuMid == _buttons[k].pid){
                       subObj.children.push({
+                        fid: _list[i].mid,
                         mid: _buttons[k].mid,
+                        pid: _buttons[k].pid,
                         type: _buttons[k].type,
                         title: _buttons[k].title,
                         name: _buttons[k].name,
@@ -76,7 +82,8 @@ module.exports = app => {
                         path: _buttons[k].path,
                         cache: _buttons[k].cache,
                         permission: _buttons[k].permission,
-                        sortId: _buttons[k].sortId
+                        sortId: _buttons[k].sortId,
+                        createTime: _buttons[k].createTime
                       })
                   }
               }
@@ -94,7 +101,6 @@ module.exports = app => {
     // 新增
     async add(body){
       const {pid, type} = body
-
       // 查询 pid(0不做判断) 是否存在
       if (type != 0){// 非目录需要查询是否存在数据
         const menu = await this.app.model.SysMenu.findByPk(pid)
@@ -106,8 +112,23 @@ module.exports = app => {
         }
       }
 
+      let _body = {
+        pid: body.pid,
+        type: type,
+        title: body.title,
+        sortId: body.sortId
+      }
+      
+      if (type == 1){
+        _body.path = body.path
+        _body.permission = body.permission
+        _body.cache = body.cache
+      }else if(type == 2){
+        _body.permission = body.permission
+      }
+
       try{
-        await this.app.model.SysMenu.create(body)
+        await this.app.model.SysMenu.create(_body)
       }catch{
         return {
           code: 201,
@@ -145,9 +166,24 @@ module.exports = app => {
         }
       }
 
+      let _body = {
+        pid: pid,
+        type: type,
+        title: body.title,
+        sortId: body.sortId
+      }
+      
+      if (type == 1){
+        _body.path = body.path
+        _body.permission = body.permission
+        _body.cache = body.cache
+      }else if(type == 2){
+        _body.permission = body.permission
+      }
+
       // 修改
       try{
-        await menu.update(body)
+        await menu.update(_body)
       }catch{
         return {
           code: 201,
@@ -183,6 +219,31 @@ module.exports = app => {
       rm.forEach(async data => {
         await data.destroy()
       })
+
+      // 删除自身 判断当前类型 0 删除所有 1 删除当前菜单下的按钮 2删除当前
+      if (menu.type == 0){
+        const menuList = await this.app.model.SysMenu.findAll({// 所有菜单
+          where: {
+            pid: menu.mid
+          }
+        })
+        menuList.forEach(async menu => {
+          let buttonList = await this.app.model.SysMenu.findAll({// 所有按钮
+            where: {
+              pid: menu.mid
+            }
+          })
+          buttonList.forEach(async button => await button.destroy())
+          await menu.destroy()
+        })
+      }else if (menu.type == 1){
+        let buttonList = await this.app.model.SysMenu.findAll({// 所有按钮
+          where: {
+            pid: mid
+          }
+        })
+        buttonList.forEach(async button => await button.destroy())
+      }
 
       await menu.destroy()
       
