@@ -175,13 +175,6 @@ module.exports = app => {
                   required: true,
                   desc: '主键'
                 },
-                type: {
-                  type: 'number',
-                  min:0,
-                  max:1,
-                  required: true,
-                  desc: '类型'
-                },
                 name: {
                   type: 'string',
                   required: false,
@@ -203,11 +196,6 @@ module.exports = app => {
                   type: 'number',
                   required: true,
                   desc: '主键'
-                },
-                type: {
-                  type: 'number',
-                  required: true,
-                  desc: '类型'
                 }
             },
             // =========== 菜单/权限 ===========

@@ -107,7 +107,7 @@ module.exports = app => {
 
     // 修改
     async edit(body){
-      const {rid, type, mlist} = body
+      const {rid, mlist} = body
       // 查询数据是否存在
       const role = await this.app.model.SysRole.findByPk(rid)
 
@@ -129,7 +129,7 @@ module.exports = app => {
       }
 
       // 删除并重建映射关系
-      if ((mlist) && (type == 1)){
+      if ((mlist) && (role.type == 1)){
         // 删除
         const roleMenu = await this.app.model.SysRoleMenu.findAll({
           where: {
@@ -159,7 +159,7 @@ module.exports = app => {
 
     // 删除
     async delete(body){
-      const {rid, type} = body
+      const {rid} = body
 
       const data = await this.app.model.SysRole.findByPk(rid)
       if (!data){
@@ -169,7 +169,7 @@ module.exports = app => {
         }
       }
 
-      if (type == 0){// 删除部门 无职位
+      if (data.type == 0){// 删除部门 无职位
         // 查询是否存在职位数据
         const deptData = await this.app.model.SysRole.findOne({
           where: {
@@ -183,7 +183,7 @@ module.exports = app => {
             msg: '删除失败, 当前部门下存在职位, 请先删除全部职位'
           }
         }
-      }else if (type == 1){// 删除职位 无用户映射
+      }else if (data.type == 1){// 删除职位 无用户映射
         // 查询是否绑定过用户
         const user = await this.app.model.SysUserRole.findOne({
           where: {
