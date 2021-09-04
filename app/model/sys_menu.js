@@ -22,18 +22,6 @@ module.exports = app => {
                 uniqueKey: true,
                 allowNull: false,
             },
-            name: {
-                type: STRING,
-                allowNull: true
-            },
-            component: {
-                type: STRING,
-                allowNull: true
-            },
-            icon: {
-                type: STRING,
-                allowNull: true
-            },
             path: {
                 type: STRING,
                 allowNull: true

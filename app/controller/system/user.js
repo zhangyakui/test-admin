@@ -19,6 +19,11 @@ module.exports = app => {
     async delete(){
       this.ctx.body = await this.service.system.user.delete(this.ctx.request.body)
     }
+
+    // 表格
+    async excel(){
+      this.ctx.body = await this.service.system.user.excel()
+    }
   }
   return UserController
 }

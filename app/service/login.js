@@ -7,7 +7,7 @@ module.exports = app => {
                     account: account,
                     enable: 1,
                 },
-                attributes: ['uid', 'username', 'account', 'password', 'gender', 'phone', 'avatarPath', 'isAdmin', 'enable', 'desc']
+                attributes: ['uid', 'username', 'account', 'password', 'gender', 'phone', 'isAdmin', 'enable', 'desc']
             })
 
             if (!user) return {code: 404, msg: '用户或密码不正确'}// 账号错误
@@ -16,19 +16,20 @@ module.exports = app => {
             if (!flag) return {code: 404, msg: '用户或密码不正确'}// 密码错误
 
             const token = this.app.jwt.sign({
-                account: account
+                account: user.account,
+                username: user.username
             }, this.app.config.jwt.secret, {expiresIn: this.app.config.jwt.expiresIn})// 生成token
 
             let deptData = {}
             let roleData = {}// 一对一
             let menuData = []
-            if (user.isAdmin == 1){// 超级管理员
+            if (user.isAdmin == 0){// 超级管理员
                 menuData = await this.app.model.SysMenu.findAll()
             }else{// 普通管理员
                 // 查询 用户角色关系映射
                 const ur = await this.app.model.SysUserRole.findOne({
                     where: {
-                        uid: 2
+                        uid:user.uid
                     }
                 })
 
@@ -146,10 +147,9 @@ module.exports = app => {
                         uid: user.uid,
                         username: user.username,
                         account: user.account,
-                        isAdmin: user.isAdmin == 1 ? true: false,
+                        isAdmin: user.isAdmin == 0 ? true: false,
                         gender: user.gender,
-                        phone: user.phone,
-                        avatarPath: user.avatarPath
+                        phone: user.phone
                     },
                     dept: {
                         name: deptData.name,

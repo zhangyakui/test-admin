@@ -1,4 +1,3 @@
-
 module.exports = app => {
     return async (ctx, next) => {
         if(!ctx.app.config.jwt.whiteList.some(item=>item==ctx.request.url)){//判断接口路径是否在白名单
@@ -12,7 +11,9 @@ module.exports = app => {
                         }
                         return
                     }
+
                     ctx.account=decoded.account// 把接口带来的用户名存在ctx上，方便后续做判断。
+                    ctx.username=decoded.username// 真实姓名
                     // 判断该账号是否在登录列表里(未登录/修改过密码)
                     if (!ctx.app.config.userPermission[ctx.account]){
                         ctx.body={
@@ -22,8 +23,7 @@ module.exports = app => {
                         return
                     }
 
-                    console.log('========== 鉴权 ==========\n-->> 用户: ', ctx.account, '\n-->> 接口: ', ctx.request.url, '\n========== 鉴权 ==========')
-
+                    // console.log('========== 鉴权 ==========\n-->> 用户: ', ctx.account, '\n-->> 接口: ', ctx.request.url, '\n========== 鉴权 ==========')
                     // 接口鉴权 除超级管理员以外的所有账号
                     if ((ctx.request.url != '/permission') && (ctx.account != 'nannan')){
                         const permission = ctx.request.url.split('?')[0].substring(1).replace(/\//g, ':')

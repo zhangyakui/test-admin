@@ -64,7 +64,7 @@ module.exports = appInfo => {
   config.jwt = {
     secret: 'nannan13572468', // 签名
     expiresIn: '10m', // 有效期
-    whiteList: ['/login', '/system/user/add']
+    whiteList: ['/login']
   };
 
   // 参数校验
@@ -75,7 +75,7 @@ module.exports = appInfo => {
   };
   
   // add your middleware config here
-  config.middleware = ['auth', 'parameter'];
+  config.middleware = ['auth', 'parameter', 'log'];
   // config.middleware = [];
 
   // 用户请求权限对象

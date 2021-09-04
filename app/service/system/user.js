@@ -4,10 +4,10 @@ module.exports = app => {
     async list(query){
       const {page, size, enable, keyword} = query
       let where = {
-        isAdmin: 2,
+        isAdmin: 1,
       }
-      if (enable != undefined) where.enable = enable// 过滤状态
-      if (keyword != undefined){// 查询关键词
+      if ((enable != undefined) && (enable != '')) where.enable = enable// 过滤状态
+      if ((keyword != undefined) && keyword != ''){// 查询关键词
         where[this.app.Sequelize.Op.or] = [
           {username: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
           {account: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
@@ -16,17 +16,50 @@ module.exports = app => {
         ]
       }
 
-      const data = await this.app.model.SysUser.findAll({
+      const userData = await this.app.model.SysUser.findAndCountAll({
         where: where,
-        offset: (Number(page)- 1) * 10,
+        offset: (Number(page)- 1) * size,
         limit: Number(size),
-        order: [['createTime', 'DESC']]
+        order: [['createTime', 'DESC']],
+        attributes: ['uid', 'username', 'account', 'gender', 'phone', 'enable', 'desc', 'createTime', 'updateTime']
       })
+
+      let data = []
+      for (let idx in userData.rows){
+        let _user = Object.assign({}, userData.rows[idx].dataValues)
+        // 查询用户角色映射关系
+        const {rid} = await this.app.model.SysUserRole.findOne({
+          where: {
+            uid: _user.uid
+          }
+        })
+
+        const jobData = await this.app.model.SysRole.findOne({
+          where: {
+            rid: rid
+          }
+        })
+
+        const deptData = await this.app.model.SysRole.findOne({
+          where: {
+            rid: jobData.pid
+          }
+        })
+
+        _user.jobId = jobData.rid
+        _user.jobName = jobData.name 
+        _user.deptId = deptData.rid
+        _user.deptName = deptData.name
+        data.push(_user)
+      }
+      // const total = await this.app.model.query('SELECT COUNT(`uid`) as `count` FROM `sys_user` WHERE `is_admin` = 1')
       return {
         code: 200,
         data: {
           list: data,
-          total: data.length
+          // total: total[0][0].count
+          total: userData.count
+
         }
       }
     }
@@ -37,7 +70,7 @@ module.exports = app => {
 
       // 新增用户
       body.password = this.ctx.helper.encrypt(password)// 加密
-      body.isAdmin = 2// 普通管理员
+      body.isAdmin = 1// 普通管理员
 
       try{
         await this.app.model.SysUser.create(body)
@@ -70,7 +103,7 @@ module.exports = app => {
 
     // 修改
     async edit(body){
-      const {uid, password, phone, enable, rid, desc} = body
+      const {uid, phone, enable, rid, desc} = body
       let update = {}
 
       // 查询账号是否存在
@@ -85,16 +118,6 @@ module.exports = app => {
       if (phone) update.phone = phone
       if (enable != undefined) update.enable = enable
       if (desc) update.desc = desc
-
-      // 判断密码是否修改
-      let isChangePwd = false
-      if (password){
-        const flag = this.ctx.helper.decrypt(password, user.password)// 是否修改密码
-        if (!flag){
-          update.password = this.ctx.helper.encrypt(password)// 新密码加密
-          isChangePwd = true
-        }
-      }
 
       await user.update(update)
 
@@ -111,10 +134,9 @@ module.exports = app => {
         }else{// 新增
           await this.app.model.SysUserRole.create({uid: uid, rid: rid})
         }
-        
-        if ((isChangePwd) && app.config.userPermission[user.account]){// 清除登录记录
-          delete app.config.userPermission[user.account]
-        }
+      }
+      if (app.config.userPermission[user.account]){// 清除登录记录
+        delete app.config.userPermission[user.account]
       }
 
       return {
@@ -145,10 +167,20 @@ module.exports = app => {
 
       if (ur) await ur.destroy()
 
+      if (app.config.userPermission[user.account]){// 清除登录记录
+        delete app.config.userPermission[user.account]
+      }
+
       return {
         code: 200,
         msg: '删除成功'
       }
+    }
+    
+    // 表格
+    async excel(){
+      const total = await this.app.model.query('SELECT COUNT(`uid`) as `count` FROM `sys_user` WHERE `is_admin` = 1')
+      return this.list({page: 1, size: total[0][0].count})
     }
   }
   return UserService

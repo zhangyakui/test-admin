@@ -30,11 +30,6 @@ module.exports = app => {
                 type: STRING,
                 allowNull: true
             },
-            avatarPath: {
-                type: INTEGER,
-                allowNull: true,
-                field: 'avatar_path'
-            },
             isAdmin: {
                 type: TINYINT,
                 allowNull: false,

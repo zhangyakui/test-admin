@@ -13,13 +13,14 @@ module.exports = app => {
   router.get('/permission', controller.permission.index);
 
   // |-------------------- 系统管理 --------------------|
-  // 用户管理 完善
+  // 用户管理
   router.get('/system/user/list', controller.system.user.list);
+  router.get('/system/user/excel', controller.system.user.excel);
   router.post('/system/user/add', controller.system.user.add);
   router.post('/system/user/edit', controller.system.user.edit);
   router.post('/system/user/delete', controller.system.user.delete);
 
-  // 角色管理 完善
+  // 角色管理
   router.get('/system/role/list', controller.system.role.list);
   router.post('/system/role/add', controller.system.role.add);
   router.post('/system/role/edit', controller.system.role.edit);
@@ -31,6 +32,10 @@ module.exports = app => {
   router.post('/system/menu/edit', controller.system.menu.edit);
   router.post('/system/menu/delete', controller.system.menu.delete);
 
+  // 操作日志
+  router.get('/system/log/list', controller.system.log.list);
+  router.get('/system/log/excel', controller.system.log.excel);
+  router.post('/system/log/delete', controller.system.log.delete);
 
 
   // 微信账号
