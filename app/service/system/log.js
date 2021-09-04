@@ -41,7 +41,7 @@ module.exports = app => {
 
         // 导出表格
         async excel(){
-            const data = await this.app.model.SysLog.findAll()
+            const data = await this.app.model.SysLog.findAll({order: [['createTime', 'DESC']]})
             return {
                 code: 200,
                 data: {
