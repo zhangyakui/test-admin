@@ -10,7 +10,7 @@ module.exports = app => {
         this.ctx.body = await this.service.system.log.delete()
       }
 
-      // 导出表格
+      // 表格
       async excel(){
         this.ctx.body = await this.service.system.log.excel()
       }

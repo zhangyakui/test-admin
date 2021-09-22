@@ -19,15 +19,11 @@ module.exports = app => {
             },
             title: {
                 type: STRING,
-                uniqueKey: true,
+                uniqueKey: false,
                 allowNull: false,
             },
             path: {
                 type: STRING,
-                allowNull: true
-            },
-            cache: {
-                type: TINYINT,
                 allowNull: true
             },
             permission: {

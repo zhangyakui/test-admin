@@ -37,7 +37,6 @@ module.exports = app => {
             type: _list[i].type,
             title: _list[i].title,
             path: _list[i].path,
-            cache: _list[i].cache,
             permission: _list[i].permission,
             sortId: _list[i].sortId,
             createTime: _list[i].createTime,
@@ -53,7 +52,6 @@ module.exports = app => {
                 type: _menus[j].type,
                 title: _menus[j].title,
                 path: _menus[j].path,
-                cache: _menus[j].cache,
                 permission: _menus[j].permission,
                 sortId: _menus[j].sortId,
                 createTime: _menus[j].createTime,
@@ -71,7 +69,6 @@ module.exports = app => {
                         type: _buttons[k].type,
                         title: _buttons[k].title,
                         path: _buttons[k].path,
-                        cache: _buttons[k].cache,
                         permission: _buttons[k].permission,
                         sortId: _buttons[k].sortId,
                         createTime: _buttons[k].createTime
@@ -89,7 +86,7 @@ module.exports = app => {
       }
     }
 
-    // 新增
+    // 添加
     async add(body){
       const {pid, type} = body
       // 查询 pid(0不做判断) 是否存在
@@ -98,42 +95,27 @@ module.exports = app => {
         if (!menu){
           return {
             code: 404,
-            msg: '新增失败， 当前父节点数据不存在'
+            msg: '添加失败， 当前父节点数据不存在'
           }
         }
       }
 
-      let _body = {
-        pid: body.pid,
-        type: type,
-        title: body.title,
-        sortId: body.sortId
-      }
-      
-      if (type == 1){
-        _body.path = body.path
-        _body.permission = body.permission
-        _body.cache = body.cache
-      }else if(type == 2){
-        _body.permission = body.permission
-      }
-
       try{
-        await this.app.model.SysMenu.create(_body)
+        await this.app.model.SysMenu.create(body)
       }catch{
         return {
           code: 201,
-          msg: '新增失败, 菜单已存在'
+          msg: '添加失败, 菜单已存在'
         }
       }
 
       return {
         code: 200,
-        msg: '新增成功'
+        msg: '添加成功'
       }
     }
 
-    // 修改
+    // 编辑
     async edit(body){
       const {mid, pid, type} = body
 
@@ -142,7 +124,7 @@ module.exports = app => {
       if (!menu) {
         return {
           code: 404,
-          msg: '修改失败, 菜单不存在'
+          msg: '编辑失败, 菜单不存在'
         }
       }
 
@@ -152,39 +134,24 @@ module.exports = app => {
         if (!menu2){
           return {
             code: 404,
-            msg: '修改失败, 当前父节点数据不存在'
+            msg: '编辑失败, 当前父节点数据不存在'
           }
         }
       }
 
-      let _body = {
-        pid: pid,
-        type: type,
-        title: body.title,
-        sortId: body.sortId
-      }
-      
-      if (type == 1){
-        _body.path = body.path
-        _body.permission = body.permission
-        _body.cache = body.cache
-      }else if(type == 2){
-        _body.permission = body.permission
-      }
-
-      // 修改
+      // 编辑
       try{
-        await menu.update(_body)
+        await menu.update(body)
       }catch{
         return {
           code: 201,
-          msg: '修改失败, 字段重复'
+          msg: '编辑失败, 字段重复'
         }
       }
 
       return {
         code: 200,
-        msg: '修改成功'
+        msg: '编辑成功'
       }
     }
 

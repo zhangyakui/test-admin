@@ -1,44 +1,53 @@
 module.exports = app => {
     const {STRING, INTEGER, TINYINT, DATE} = app.Sequelize;
-    const SysUser = app.model.define(
-        'sys_user', 
+    const AccPhone = app.model.define(
+        'acc_phone', 
         {
-            uid: {
+            id: {
                 type: INTEGER,
                 autoIncrement: true,
-                primaryKey: true,
                 allowNull: false,
+                primaryKey: true
             },
-            userName: {
+            cardName: {
                 type: STRING,
+                uniqueKey: true,
                 allowNull: false,
-                field: 'user_name'
+                field: 'card_name'
             },
-            account: {
+            number: {
                 type: STRING,
                 uniqueKey: true,
                 allowNull: false
             },
-            password: {
-                type: STRING,
+            status: {
+                type: TINYINT,
                 allowNull: false,
             },
-            gender: {
+            agent: {
+                type: STRING,
+                allowNull: false
+            },
+            operator: {
                 type: TINYINT,
                 allowNull: false
             },
-            phone: {
+            iccid: {
                 type: STRING,
                 allowNull: true
             },
-            isAdmin: {
-                type: TINYINT,
-                allowNull: false,
-                field: 'is_admin'
+            puk: {
+                type: STRING,
+                allowNull: true
             },
-            enable: {
-                type: TINYINT,
-                allowNull: false
+            realInfo: {
+                type: STRING,
+                allowNull: true,
+                field: 'real_info'
+            },
+            local: {
+                type: STRING,
+                allowNull: true
             },
             desc: {
                 type: STRING,
@@ -56,5 +65,5 @@ module.exports = app => {
             }
         }
     );
-    return SysUser;
+    return AccPhone;
 }

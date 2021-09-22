@@ -2,17 +2,18 @@
 CREATE DATABASE IF NOT EXISTS `zyk-admin`;
 USE `zyk-admin`;
 
+-- *********************** 系统管理 ***********************
 -- 用户表
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
   `uid` INT(11) NOT NULL AUTO_INCREMENT COMMENT '用户id',
-  `username` VARCHAR(255) NOT NULL COMMENT '姓名',
+  `user_name` VARCHAR(255) NOT NULL COMMENT '姓名',
   `account` VARCHAR(255) NOT NULL COMMENT '账号, 一般采用邮箱作为登录',
   `password` VARCHAR(255) NOT NULL COMMENT '密码',
-  `gender` TINYINT(4) NOT NULL COMMENT '性别 1男 2女',
+  `gender` TINYINT NOT NULL COMMENT '性别 1男 2女',
   `phone` VARCHAR(255) DEFAULT NULL COMMENT '手机号',
-  `is_admin` TINYINT(4) NOT NULL COMMENT '是否是超级管理员 0超级管理员 1普通管理员',
-  `enable` TINYINT(4) NOT NULL COMMENT '是否启用 0禁用 1启用',
+  `is_admin` TINYINT NOT NULL COMMENT '是否是超级管理员 0超级管理员 1普通管理员',
+  `enable` TINYINT NOT NULL COMMENT '是否启用 0禁用 1启用',
   `desc` VARCHAR(255) DEFAULT NULL COMMENT '备注',
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日期',
@@ -20,7 +21,7 @@ CREATE TABLE `sys_user` (
   UNIQUE KEY `account` (`account`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
 
-INSERT INTO `sys_user`(`username`,`account`,`password`,`gender`,`is_admin`,`enable`,`desc`) VALUES 
+INSERT INTO `sys_user`(`user_name`,`account`,`password`,`gender`,`is_admin`,`enable`,`desc`) VALUES 
 ('楠楠传媒','nannan','$2a$10$QjkL0taIZCaRsiT26KK5aujQhakzSqOefbKw9kJq8RR5WPWSwJySW',0,0,1,'拥有最高权限, 不需要映射角色菜单表'); -- bcrypt 密码 在线加密: http://www.ab126.com/goju/10822.html (默认10位)
 
 -- 用户角色映射表
@@ -37,13 +38,13 @@ DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role` (
   `rid` INT(11) NOT NULL AUTO_INCREMENT COMMENT '角色id',
   `pid` INT(11) NOT NULL COMMENT '父级id',
-  `type` TINYINT(4) NOT NULL COMMENT '类型 0部门 1职位',
-  `name` VARCHAR(255) NOT NULL COMMENT '名称 部门/职位',
+  `type` TINYINT NOT NULL COMMENT '类型 0部门 1职位',
+  `title` VARCHAR(255) NOT NULL COMMENT '名称 部门/职位',
   `desc` VARCHAR(255) DEFAULT NULL COMMENT '备注',
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
   `update_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新日期',
   PRIMARY KEY (`rid`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`title`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT='角色表';
 
 -- 角色菜单映射表
@@ -89,23 +90,24 @@ INSERT  INTO `sys_menu`(`mid`,`pid`,`type`,`title`,`path`,`cache`,`permission`,`
 (12, 11, 2, '菜单新增', NULL, NULL, 'system:menu:add', 1),
 (13, 11, 2, '菜单编辑', NULL, NULL, 'system:menu:edit', 2),
 (14, 11, 2, '菜单删除', NULL, NULL, 'system:menu:delete', 3),
-(15, 1, 1, '操作日志', '/system/log', 1, 'system:log:list', 4),
+(15, 1, 1, '操作日志', '/system/log', 0, 'system:log:list', 4),
 (16, 15, 2, '清空日志', NULL, NULL, 'system:log:delete', 1),
 (17, 15, 2, '日志表格', NULL, NULL, 'system:log:excel', 1);
 
 -- 日志表
 DROP TABLE IF EXISTS `sys_log`;
 CREATE TABLE `sys_log` (
-  `lid` INT(11) NOT NULL AUTO_INCREMENT COMMENT '日志id',
+  `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT '日志id',
   `account` VARCHAR(255) DEFAULT NULL COMMENT '请求账号',
-  `username` VARCHAR(255) DEFAULT NULL COMMENT '请求姓名',
-  `action_title` VARCHAR(255) DEFAULT NULL COMMENT '操作名称',
+  `user_name` VARCHAR(255) DEFAULT NULL COMMENT '请求姓名',
+  `title` VARCHAR(255) DEFAULT NULL COMMENT '操作名称',
   `url` VARCHAR(255) DEFAULT NULL COMMENT '请求接口',
   `method` VARCHAR(255) DEFAULT NULL COMMENT '请求类型',
-  `params` VARCHAR(255) DEFAULT NULL COMMENT '请求参数',
+  `params` LONGTEXT DEFAULT NULL COMMENT '请求参数',
   `create_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建日期',
-  PRIMARY KEY (`lid`)
+  PRIMARY KEY (`id`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COMMENT='日志表';
+
 
 
 

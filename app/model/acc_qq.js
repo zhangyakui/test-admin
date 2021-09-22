@@ -1,42 +1,46 @@
 module.exports = app => {
     const {STRING, INTEGER, TINYINT, DATE} = app.Sequelize;
-    const SysUser = app.model.define(
-        'sys_user', 
+    const AccQq = app.model.define(
+        'acc_qq', 
         {
-            uid: {
+            id: {
                 type: INTEGER,
                 autoIncrement: true,
-                primaryKey: true,
                 allowNull: false,
+                primaryKey: true
             },
-            userName: {
+            avatarUrl: {
                 type: STRING,
-                allowNull: false,
-                field: 'user_name'
+                allowNull: true,
+                field: 'avatar_url'
+            },
+            nickName: {
+                type: STRING,
+                allowNull: true,
+                field: 'nick_name'
             },
             account: {
                 type: STRING,
                 uniqueKey: true,
-                allowNull: false
+                allowNull: false,
             },
             password: {
                 type: STRING,
-                allowNull: false,
-            },
-            gender: {
-                type: TINYINT,
                 allowNull: false
             },
             phone: {
                 type: STRING,
                 allowNull: true
             },
-            isAdmin: {
-                type: TINYINT,
-                allowNull: false,
-                field: 'is_admin'
+            level: {
+                type: STRING,
+                allowNull: true
             },
-            enable: {
+            abnormal: {
+                type: STRING,
+                allowNull: true
+            },
+            status: {
                 type: TINYINT,
                 allowNull: false
             },
@@ -56,5 +60,5 @@ module.exports = app => {
             }
         }
     );
-    return SysUser;
+    return AccQq;
 }

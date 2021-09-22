@@ -7,8 +7,8 @@ module.exports = app => {
             if (keyword != undefined){// 查询关键词
                 where[this.app.Sequelize.Op.or] = [
                 {account: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
-                {username: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
-                {actionTitle: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
+                {userName: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
+                {title: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
                 {url: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
                 {params: {[this.app.Sequelize.Op.like]: `%${keyword}%`}}
                 ]
@@ -39,7 +39,7 @@ module.exports = app => {
             }
         }
 
-        // 导出表格
+        // 表格
         async excel(){
             const data = await this.app.model.SysLog.findAll({order: [['createTime', 'DESC']]})
             return {

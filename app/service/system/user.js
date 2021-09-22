@@ -6,10 +6,11 @@ module.exports = app => {
       let where = {
         isAdmin: 1,
       }
-      if ((enable != undefined) && (enable != '')) where.enable = enable// 过滤状态
-      if ((keyword != undefined) && keyword != ''){// 查询关键词
+
+      if (enable != undefined && enable.length != 0) where.enable = enable// 筛选状态
+      if (keyword && keyword.length != 0){// 查询关键词
         where[this.app.Sequelize.Op.or] = [
-          {username: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
+          {userName: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
           {account: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
           {phone: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
           {desc: {[this.app.Sequelize.Op.like]: `%${keyword}%`}}
@@ -21,7 +22,7 @@ module.exports = app => {
         offset: (Number(page)- 1) * size,
         limit: Number(size),
         order: [['createTime', 'DESC']],
-        attributes: ['uid', 'username', 'account', 'gender', 'phone', 'enable', 'desc', 'createTime', 'updateTime']
+        attributes: ['uid', 'userName', 'account', 'gender', 'phone', 'enable', 'desc', 'createTime', 'updateTime']
       })
 
       let data = []
@@ -47,28 +48,26 @@ module.exports = app => {
         })
 
         _user.jobId = jobData.rid
-        _user.jobName = jobData.name 
+        _user.jobTitle = jobData.title 
         _user.deptId = deptData.rid
-        _user.deptName = deptData.name
+        _user.deptTitle = deptData.title
         data.push(_user)
       }
-      // const total = await this.app.model.query('SELECT COUNT(`uid`) as `count` FROM `sys_user` WHERE `is_admin` = 1')
+
       return {
         code: 200,
         data: {
           list: data,
-          // total: total[0][0].count
           total: userData.count
-
         }
       }
     }
 
-    // 新增
+    // 添加
     async add(body){
       const {account, password, rid} = body
 
-      // 新增用户
+      // 添加用户
       body.password = this.ctx.helper.encrypt(password)// 加密
       body.isAdmin = 1// 普通管理员
 
@@ -77,7 +76,7 @@ module.exports = app => {
       }catch{
         return {
           code: 201,
-          msg: '新增失败, 用户已存在'
+          msg: '添加失败, 用户已存在'
         }
       }
 
@@ -97,11 +96,11 @@ module.exports = app => {
 
       return {
         code: 200,
-        msg: '新增成功'
+        msg: '添加成功'
       }
     }
 
-    // 修改
+    // 编辑
     async edit(body){
       const {uid, phone, enable, rid, desc} = body
       let update = {}
@@ -111,7 +110,7 @@ module.exports = app => {
       if (!user){
         return {
           code: 404,
-          msg: '修改失败, 用户不存在'
+          msg: '编辑失败, 用户不存在'
         }
       }
 
@@ -121,7 +120,7 @@ module.exports = app => {
 
       await user.update(update)
 
-      // 修改 用户角色映射
+      // 编辑 用户角色映射
       if (rid){
         const ur = await this.app.model.SysUserRole.findOne({
           where: {
@@ -129,9 +128,9 @@ module.exports = app => {
           }
         })
 
-        if (ur){// 修改
+        if (ur){// 编辑
           await ur.update({rid: rid})
-        }else{// 新增
+        }else{// 添加
           await this.app.model.SysUserRole.create({uid: uid, rid: rid})
         }
       }
@@ -141,7 +140,7 @@ module.exports = app => {
 
       return {
         code: 200,
-        msg: '修改成功'
+        msg: '编辑成功'
       }
     }
 
@@ -152,7 +151,7 @@ module.exports = app => {
       if (!user){
         return {
           code: 404,
-          msg: '修改失败, 用户不存在'
+          msg: '编辑失败, 用户不存在'
         }
       }
 

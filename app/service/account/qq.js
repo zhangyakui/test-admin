@@ -1,5 +1,5 @@
 module.exports = app => {
-    class WeiXinService extends app.Service {
+    class QQService extends app.Service {
       // 列表
       async list(query){
         const {page, size, status, keyword} = query
@@ -11,14 +11,14 @@ module.exports = app => {
             {nickName: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
             {account: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
             {password: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
+            {level: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
             {phone: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
-            {uid: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
             {abnormal: {[this.app.Sequelize.Op.like]: `%${keyword}%`}},
             {desc: {[this.app.Sequelize.Op.like]: `%${keyword}%`}}
           ]
         }
 
-        const data = await this.app.model.AccWeixin.findAndCountAll({
+        const data = await this.app.model.AccQq.findAndCountAll({
           where: where,
           offset: (Number(page)- 1) * size,
           limit: Number(size),
@@ -36,8 +36,29 @@ module.exports = app => {
   
       // 新增
       async add(body){
+        const {account} = body
+        // const api = `https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=${account}`// 官方api 昵称乱码未解决
+        const api = `https://api.berfen.com/api/qqcx.php?qq=${account}`// 三方api
+        const rsp = await app.curl(api, {
+          dataType: 'json',
+          timeout: 3000,
+        })
+
+        // 查询正确 官方返回值
+        // if (rsp.data.indexOf('portraitCallBack') != -1){
+        //   const qqData = JSON.parse(/portraitCallBack\((\S*)\)/.exec(rsp.data)[1])
+        //   body.headUrl = `http://q1.qlogo.cn/g?b=qq&nk=${account}&s=100`
+        //   body.nickName = qqData[account][6]
+        // }
+
+        // 查询正确 三方返回值
+        if (rsp.data.code == 200){
+          body.nickName = rsp.data.nc
+          body.avatarUrl = rsp.data.tx
+        }
+
         try{
-          await this.app.model.AccWeixin.create(body)
+          await this.app.model.AccQq.create(body)
           return {
             code: 200,
             msg: '新增成功'
@@ -53,8 +74,8 @@ module.exports = app => {
       // 编辑
       async edit(body){
         const {id} = body 
-        const weixin = await this.app.model.AccWeixin.findByPk(id)
-        if (!weixin) {
+        const qq = await this.app.model.AccQq.findByPk(id)
+        if (!qq) {
           return {
             code: 404,
             msg: '编辑失败, 数据不存在'
@@ -62,7 +83,7 @@ module.exports = app => {
         }
   
         try{
-          await weixin.update(body)
+          await qq.update(body)
           return {
             code: 200,
             msg: '编辑成功'
@@ -78,15 +99,15 @@ module.exports = app => {
       // 删除
       async delete(body){
         const {id} = body 
-        const weixin = await this.app.model.AccWeixin.findByPk(id)
-        if (!weixin) {
+        const qq = await this.app.model.AccQq.findByPk(id)
+        if (!qq) {
           return {
             code: 404,
             msg: '删除失败, 数据不存在'
           }
         }
   
-        await weixin.destroy()
+        await qq.destroy()
         return {
           code: 200,
           msg: '删除成功'
@@ -95,11 +116,11 @@ module.exports = app => {
   
       // 表格
       async excel(){
-        const total = await this.app.model.query('SELECT COUNT(`id`) as `count` FROM `acc_weixin`')
+        const total = await this.app.model.query('SELECT COUNT(`id`) as `count` FROM `acc_qq`')
         return this.list({page: 1, size: total[0][0].count})
       }
     }
-    return WeiXinService
+    return QQService
   }
   
   

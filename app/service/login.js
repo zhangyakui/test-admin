@@ -7,7 +7,7 @@ module.exports = app => {
                     account: account,
                     enable: 1,
                 },
-                attributes: ['uid', 'username', 'account', 'password', 'gender', 'phone', 'isAdmin', 'enable', 'desc']
+                attributes: ['uid', 'userName', 'account', 'password', 'gender', 'phone', 'isAdmin', 'enable', 'desc']
             })
 
             if (!user) return {code: 404, msg: '用户或密码不正确'}// 账号错误
@@ -17,7 +17,7 @@ module.exports = app => {
 
             const token = this.app.jwt.sign({
                 account: user.account,
-                username: user.username
+                userName: user.userName
             }, this.app.config.jwt.secret, {expiresIn: this.app.config.jwt.expiresIn})// 生成token
 
             let deptData = {}
@@ -102,7 +102,7 @@ module.exports = app => {
                 let menuObj = {
                 path: _list[i].path,
                 name: _list[i].name,
-                meta: {title: _list[i].title, icon: _list[i].icon},
+                meta: {title: _list[i].title},
                 children: []
                 }
                 let listMid = _list[i].mid
@@ -112,7 +112,7 @@ module.exports = app => {
                         let subObj = {
                         path: _menus[j].path,
                         name: _menus[j].name,
-                        meta: {title: _menus[j].title, icon: _menus[j].icon, cache: _menus[j].cache == 0 ? false : true},
+                        meta: {title: _menus[j].title},
                         component: _menus[j].component,
                         // operations: [],
                         }
@@ -145,18 +145,18 @@ module.exports = app => {
                 data: {
                     user: {
                         uid: user.uid,
-                        username: user.username,
+                        userName: user.userName,
                         account: user.account,
                         isAdmin: user.isAdmin == 0 ? true: false,
                         gender: user.gender,
                         phone: user.phone
                     },
                     dept: {
-                        name: deptData.name,
+                        title: deptData.title,
                         desc: deptData.desc,
                     },
                     role: {
-                        name: roleData.name,
+                        title: roleData.title,
                         desc: roleData.desc,
                     },
                     token: token

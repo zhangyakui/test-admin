@@ -13,7 +13,7 @@ module.exports = app => {
                     }
 
                     ctx.account=decoded.account// 把接口带来的用户名存在ctx上，方便后续做判断。
-                    ctx.username=decoded.username// 真实姓名
+                    ctx.userName=decoded.userName// 真实姓名
                     // 判断该账号是否在登录列表里(未登录/修改过密码)
                     if (!ctx.app.config.userPermission[ctx.account]){
                         ctx.body={

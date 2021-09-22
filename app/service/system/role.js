@@ -21,7 +21,7 @@ module.exports = app => {
             rid: _dept[i].rid,
             pid: _dept[i].pid,
             type: _dept[i].type,
-            name: _dept[i].name,
+            title: _dept[i].title,
             desc: _dept[i].desc,
             createTime: _dept[i].createTime,
             children: []
@@ -33,7 +33,7 @@ module.exports = app => {
                 rid: _job[j].rid,
                 pid: _job[j].pid,
                 type: _job[j].type,
-                name: _job[j].name,
+                title: _job[j].title,
                 desc: _job[j].desc,
                 createTime: _job[j].createTime
               })
@@ -67,30 +67,30 @@ module.exports = app => {
       }
     }
 
-    // 新增 部门新增, 职位需新增关系映射
+    // 添加 部门添加, 职位需添加关系映射
     async add(body){
-      const {type, name, mlist} = body
-      // 新增角色信息
+      const {type, title, mlist} = body
+      // 添加角色信息
       try{
         await this.app.model.SysRole.create(body)
       }catch{
         return {
           code: 201,
-          msg: '新增失败, 部门/职位已存在'
+          msg: '添加失败, 部门/职位已存在'
         }
       }
 
-      // 判断如果是角色, 新增映射信息
+      // 判断如果是角色, 添加映射信息
       if (type == 1){
-        // 查询 新增角色 pid 
+        // 查询 添加角色 pid 
         const {rid} = await this.app.model.SysRole.findOne({
           where: {
-            name: name
+            title: title
           },
           attributes: ['rid']
         })
 
-        // 新增映射
+        // 添加映射
         JSON.parse(mlist).forEach(async mid => {
           await this.app.model.SysRoleMenu.create({
             rid: rid,
@@ -101,11 +101,11 @@ module.exports = app => {
 
       return {
         code: 200,
-        msg: '新增成功'
+        msg: '添加成功'
       }
     }
 
-    // 修改
+    // 编辑
     async edit(body){
       const {rid, mlist} = body
       // 查询数据是否存在
@@ -114,17 +114,17 @@ module.exports = app => {
       if (!role){
         return {
           code: 404,
-          msg: '修改失败, 数据不存在'
+          msg: '编辑失败, 数据不存在'
         }
       }
 
-      // 修改 角色信息
+      // 编辑 角色信息
       try{
         await role.update(body)
       }catch{
         return {
           code: 201,
-          msg: '修改失败, 字段重复'
+          msg: '编辑失败, 字段重复'
         }
       }
 
@@ -153,7 +153,7 @@ module.exports = app => {
 
       return {
         code: 200,
-        msg: '修改成功'
+        msg: '编辑成功'
       }
     }
 

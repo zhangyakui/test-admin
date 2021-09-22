@@ -1,9 +1,9 @@
 module.exports = app => {
-    const {STRING, INTEGER, DATE} = app.Sequelize;
+    const {STRING, INTEGER, TEXT, DATE} = app.Sequelize;
     const SysLog = app.model.define(
         'sys_log', 
         {
-            lid: {
+            id: { 
                 type: INTEGER,
                 autoIncrement: true,
                 allowNull: false,
@@ -13,14 +13,14 @@ module.exports = app => {
                 type: STRING,
                 allowNull: false
             },
-            username: {
-                type: STRING,
-                allowNull: false
-            },
-            actionTitle: {
+            userName: {
                 type: STRING,
                 allowNull: false,
-                field: 'action_title'
+                field: 'user_name'
+            },
+            title: {
+                type: STRING,
+                allowNull: false
             },
             url: {
                 type: STRING,
@@ -31,8 +31,8 @@ module.exports = app => {
                 allowNull: false
             },
             params: {
-                type: STRING,
-                allowNull: false
+                type: TEXT('long'),
+                allowNull: true
             },
             createTime: {
                 type: DATE, 

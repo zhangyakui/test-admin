@@ -1,55 +1,58 @@
 module.exports = app => {
-    const {STRING, INTEGER, DATE} = app.Sequelize;
-    const WeixinAccount = app.model.define(
-        'weixin_account', 
+    const {STRING, INTEGER, TINYINT, DATE} = app.Sequelize;
+    const MobPhone = app.model.define(
+        'mob_phone', 
         {
-            id: {
+            id: { 
                 type: INTEGER,
                 autoIncrement: true,
                 allowNull: false,
                 primaryKey: true
             },
-            category: {
-                type: STRING,
+            type: {
+                type: TINYINT,
                 allowNull: false
             },
-            headUrl: {
-                type: STRING,
-                allowNull: true,
-                field: 'head_url'
-            },
-            nickName: {
-                type: STRING,
-                allowNull: true,
-                field: 'nick_name'
-            },
-            account: {
-                type: STRING,
-                unique: true,
-                allowNull: false
-            },
-            password: {
-                type: STRING,
-                allowNull: false
-            },
-            uid: {
-                type: STRING,
-                unique: true,
-                allowNull: false
-            },
-            phone: {
-                type: STRING,
-                allowNull: true
-            },
-            accountStatus: {
+            phoneId: {
                 type: STRING,
                 allowNull: false,
-                field: 'account_status'
+                uniqueKey: true,
+                field: 'phone_id'
             },
-            operateStatus: {
+            name: {
+                type: STRING,
+                allowNull: false
+            },
+            brand: {
+                type: STRING,
+                allowNull: false
+            },
+            model: {
+                type: STRING,
+                allowNull: false
+            },
+            sysVer: {
                 type: STRING,
                 allowNull: false,
-                field: 'operate_status'
+                field: 'sys_ver'
+            },
+            memory: {
+                type: STRING,
+                allowNull: false
+            },
+            disk: {
+                type: STRING,
+                allowNull: false
+            },
+            devNum: {
+                type: STRING,
+                allowNull: false,
+                uniqueKey: true,
+                field: 'dev_num'
+            },
+            status: {
+                type: TINYINT,
+                allowNull: false
             },
             desc: {
                 type: STRING,
@@ -61,12 +64,11 @@ module.exports = app => {
                 field: 'create_time'
             },
             updateTime: {
-                type: DATE,
+                type: DATE, 
                 allowNull: true,
                 field: 'update_time'
             }
         }
     );
-   
-    return WeixinAccount;
+    return MobPhone;
 }

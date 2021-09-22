@@ -23,6 +23,7 @@ module.exports = appInfo => {
     database: 'zyk-admin',
     username: 'root',
     password: '123456',
+    logging: false,
     define: {
       raw: true,
       underscored: true,
@@ -63,7 +64,7 @@ module.exports = appInfo => {
   // jwt验证
   config.jwt = {
     secret: 'nannan13572468', // 签名
-    expiresIn: '10m', // 有效期
+    expiresIn: '8h', // 有效期
     whiteList: ['/login']
   };
 

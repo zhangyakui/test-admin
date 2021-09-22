@@ -17,7 +17,7 @@ module.exports = app => {
                 type: INTEGER,
                 allowNull: false,
             },
-            name: {
+            title: {
                 type: STRING,
                 allowNull: false
             },

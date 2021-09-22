@@ -10,7 +10,7 @@ module.exports = app => {
       this.ctx.body = await this.service.system.role.add(this.ctx.request.body)
     }
 
-    // 修改
+    // 编辑
     async edit(){
       this.ctx.body = await this.service.system.role.edit(this.ctx.request.body)
     }
