@@ -38,7 +38,7 @@ module.exports = app => {
       async add(body){
         const {account} = body
         // const api = `https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=${account}`// 官方api 昵称乱码未解决
-        const api = `https://api.berfen.com/api/qqcx.php?qq=${account}`// 三方api
+        const api = `https://tenapi.cn/qqname/?qq=${account}`// qq三方api
         const rsp = await app.curl(api, {
           dataType: 'json',
           timeout: 3000,
@@ -53,8 +53,8 @@ module.exports = app => {
 
         // 查询正确 三方返回值
         if (rsp.data.code == 200){
-          body.nickName = rsp.data.nc
-          body.avatarUrl = rsp.data.tx
+          body.nickName = rsp.data.name
+          body.avatarUrl = rsp.data.imgurl
         }
 
         try{

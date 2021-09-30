@@ -1,54 +1,50 @@
 module.exports = app => {
     const {STRING, INTEGER, TINYINT, DATE} = app.Sequelize;
-    const MobPhone = app.model.define(
-        'mob_phone', 
+    const ApprReimburse = app.model.define(
+        'appr_reimburse', 
         {
             id: { 
                 type: INTEGER,
                 autoIncrement: true,
+                primaryKey: true,
                 allowNull: false,
-                primaryKey: true
             },
-            type: {
-                type: TINYINT,
-                allowNull: false
-            },
-            phoneId: {
+            imgUrl: {
                 type: STRING,
                 allowNull: false,
-                uniqueKey: true,
-                field: 'phone_id'
+                field: 'img_url'
             },
-            name: {
+            category: {
                 type: STRING,
                 allowNull: false
             },
-            brand: {
-                type: STRING,
+            price: {
+                type: INTEGER,
                 allowNull: false
             },
-            model: {
+            reason: {
                 type: STRING,
-                allowNull: false
+                allowNull: true
             },
-            sysVer: {
+            applyAccount: {
                 type: STRING,
-                allowNull: false,
-                field: 'sys_ver'
+                allowNull: true,
+                field: 'apply_account'
             },
-            memory: {
+            applyName: {
                 type: STRING,
-                allowNull: false
+                allowNull: true,
+                field: 'apply_name'
             },
-            disk: {
+            adoptName: {
                 type: STRING,
-                allowNull: false
+                allowNull: true,
+                field: 'adopt_name'
             },
-            devNum: {
+            settlementName: {
                 type: STRING,
-                allowNull: false,
-                uniqueKey: true,
-                field: 'dev_num'
+                allowNull: true,
+                field: 'settlement_name'
             },
             status: {
                 type: TINYINT,
@@ -70,5 +66,5 @@ module.exports = app => {
             }
         }
     );
-    return MobPhone;
+    return ApprReimburse;
 }

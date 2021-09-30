@@ -25,8 +25,8 @@ module.exports = app => {
 
                     // console.log('========== 鉴权 ==========\n-->> 用户: ', ctx.account, '\n-->> 接口: ', ctx.request.url, '\n========== 鉴权 ==========')
                     // 接口鉴权 除超级管理员以外的所有账号
-                    if ((ctx.request.url != '/permission') && (ctx.account != 'nannan')){
-                        const permission = ctx.request.url.split('?')[0].substring(1).replace(/\//g, ':')
+                    if ((ctx.request.url != '/api/permission') && (ctx.account != 'nannan')){
+                        const permission = ctx.request.url.replace('/api', '').split('?')[0].substring(1).replace(/\//g, ':')
                         if (ctx.app.config.userPermission[ctx.account].perms.indexOf(permission) == -1){
                             ctx.body = {
                                 code: 403,

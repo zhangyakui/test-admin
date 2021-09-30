@@ -65,7 +65,7 @@ module.exports = appInfo => {
   config.jwt = {
     secret: 'nannan13572468', // 签名
     expiresIn: '8h', // 有效期
-    whiteList: ['/login']
+    whiteList: ['/api/login']
   };
 
   // 参数校验

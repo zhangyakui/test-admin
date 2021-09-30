@@ -2,7 +2,7 @@
 module.exports = app => {
     return async (ctx, next) => {
         const apiParam = {// 请求接口 参数校验
-          '/login': {// 登录接口
+          '/api/login': {// 登录接口
               account:{
                   type: 'string',
                   required: true,
@@ -14,8 +14,8 @@ module.exports = app => {
                   desc: '密码'
               }
           },
-          // =========== 用户 ===========
-          '/system/user/list': {// 用户列表接口
+          // =========== 系统-用户 ===========
+          '/api/system/user/list': {// 用户列表接口
               page:{
                 type:'number',
                 min: 1,
@@ -38,7 +38,7 @@ module.exports = app => {
                 desc: '搜索关键词'
               }
           },
-          '/system/user/add': {// 用户新增接口
+          '/api/system/user/add': {// 用户新增接口
               userName: {
                 type: 'string',
                 required: true,
@@ -84,7 +84,7 @@ module.exports = app => {
                 desc: '备注'
               }
           },
-          '/system/user/edit': {// 用户修改接口
+          '/api/system/user/edit': {// 用户修改接口
               uid: {
                 type: 'number',
                 required: true,
@@ -113,15 +113,15 @@ module.exports = app => {
                 desc: '备注'
               }
           },
-          '/system/user/delete': {// 用户删除接口
+          '/api/system/user/delete': {// 用户删除接口
               uid: {
                 type: 'number',
                 required: true,
                 desc: '主键'
               }
           },
-          // =========== 角色 ===========
-          '/system/role/list': {// 角色列表接口 角色/权限组
+          // =========== 系统-角色 ===========
+          '/api/system/role/list': {// 角色列表接口 角色/权限组
               type: {
                 type: 'enum',
                 values: ['role', 'perm'],
@@ -133,7 +133,7 @@ module.exports = app => {
                 desc: '主键'
               }
           },
-          '/system/role/add': {// 角色新增接口
+          '/api/system/role/add': {// 角色新增接口
               pid: {
                   type: 'number',
                   required: true,
@@ -162,7 +162,7 @@ module.exports = app => {
                 desc: '权限标识列表 需格式化成字符串'
               }
           },
-          '/system/role/edit': {// 角色修改接口
+          '/api/system/role/edit': {// 角色修改接口
               rid: {
                 type: 'number',
                 required: true,
@@ -184,15 +184,15 @@ module.exports = app => {
                 desc: '权限标识列表 需格式化成字符串'
               }
           },
-          '/system/role/delete': {// 角色删除接口
+          '/api/system/role/delete': {// 角色删除接口
               rid: {
                 type: 'number',
                 required: true,
                 desc: '主键'
               }
           },
-          // =========== 菜单/权限 ===========
-          '/system/menu/add': {// 菜单新增接口
+          // =========== 系统-菜单/权限 ===========
+          '/api/system/menu/add': {// 菜单新增接口
               pid: {
                 type: 'number',
                 required: true,
@@ -241,7 +241,7 @@ module.exports = app => {
                 desc: '排序'
               }
           },
-          '/system/menu/edit': {// 菜单修改接口
+          '/api/system/menu/edit': {// 菜单修改接口
               mid: {
                   type: 'number',
                   required: true,
@@ -295,15 +295,15 @@ module.exports = app => {
                 desc: '排序'
               }
           },
-          '/system/menu/delete': {// 菜单删除接口
+          '/api/system/menu/delete': {// 菜单删除接口
               mid: {
                   type: 'number',
                   required: true,
                   desc: '主键'
               }
           },
-          // =========== 日志 ===========
-          '/system/log/list': {
+          // =========== 系统-日志 ===========
+          '/api/system/log/list': {
             page:{
               type:'number',
               min: 1,
@@ -321,8 +321,8 @@ module.exports = app => {
               desc: '搜索关键词'
             }
           },
-          // =========== 手机 ===========
-          '/assets/phone/list': {
+          // =========== 资产-手机 ===========
+          '/api/assets/phone/list': {
             page:{
               type:'number',
               min: 1,
@@ -350,7 +350,7 @@ module.exports = app => {
               desc: '搜索关键词'
             }
           },
-          '/assets/phone/add': {
+          '/api/assets/phone/add': {
             type: {
               type: 'string',
               required: true,
@@ -407,7 +407,7 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/assets/phone/edit': {
+          '/api/assets/phone/edit': {
             id: {
               type: 'number',
               required: true,
@@ -439,15 +439,204 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/assets/phone/delete': {
+          '/api/assets/phone/delete': {
             id: {
               type: 'number',
               required: true,
               desc: '主键'
             }
           },
-          // =========== 手机号 ===========
-          '/account/phone/list': {
+          // =========== 资产-电脑 ===========
+          '/api/assets/computer/list': {
+            page:{
+              type:'number',
+              min: 1,
+              required: true,
+              desc: '页码'
+            },
+            size: {
+              type: 'number',
+              required: true,
+              desc: '页码数据量'
+            },
+            category: {
+              type: 'string',
+              required: false,
+              desc: '品类'
+            },
+            status: {
+              type: 'string',
+              required: false,
+              desc: '状态'
+            },
+            keyword: {
+              type: 'string',
+              required: false,
+              desc: '搜索关键词'
+            }
+          },
+          '/api/assets/computer/add': {
+            category: {
+              type: 'string',
+              required: true,
+              desc: '系统类型 0苹果 1安卓'
+            },
+            brand: {
+              type: 'string',
+              required: true,
+              desc: '品牌'
+            },
+            model: {
+              type: 'string',
+              required: false,
+              desc: '型号'
+            },
+            computerId: {
+              type: 'string',
+              required: true,
+              desc: '编号'
+            },
+            specs: {
+              type: 'string',
+              required: false,
+              desc: '规格'
+            },
+            status: {
+              type: 'number',
+              required: false,
+              desc: '状态'
+            },
+            desc: {
+              type: 'string',
+              required: false,
+              desc: '描述'
+            }
+          },
+          '/api/assets/computer/edit': {
+            id: {
+              type: 'number',
+              required: true,
+              desc: '主键'
+            },
+            computerId: {
+              type: 'string',
+              required: true,
+              desc: '编号'
+            },
+            status: {
+              type: 'number',
+              required: false,
+              desc: '状态'
+            },
+            desc: {
+              type: 'string',
+              required: false,
+              desc: '描述'
+            }
+          },
+          '/api/assets/computer/delete': {
+            id: {
+              type: 'number',
+              required: true,
+              desc: '主键'
+            }
+          },
+          // =========== 资产-其他 ===========
+          '/api/assets/other/list': {
+            page:{
+              type:'number',
+              min: 1,
+              required: true,
+              desc: '页码'
+            },
+            size: {
+              type: 'number',
+              required: true,
+              desc: '页码数据量'
+            },
+            keyword: {
+              type: 'string',
+              required: false,
+              desc: '搜索关键词'
+            }
+          },
+          '/api/assets/other/add': {
+            category: {
+              type: 'string',
+              required: true,
+              desc: '系统类型 0苹果 1安卓'
+            },
+            brand: {
+              type: 'string',
+              required: true,
+              desc: '品牌'
+            },
+            specs: {
+              type: 'string',
+              required: false,
+              desc: '规格'
+            },
+            count: {
+              type: 'number',
+              required: true,
+              desc: '数量'
+            },
+            desc: {
+              type: 'string',
+              required: false,
+              desc: '描述'
+            }
+          },
+          '/api/assets/other/edit': {
+            id: {
+              type: 'number',
+              required: true,
+              desc: '主键'
+            },
+            count: {
+              type: 'number',
+              required: false,
+              desc: '数量'
+            },
+            desc: {
+              type: 'string',
+              required: false,
+              desc: '描述'
+            }
+          },
+          '/api/assets/other/delete': {
+            id: {
+              type: 'number',
+              required: true,
+              desc: '主键'
+            }
+          },
+          // =========== 审核-报销 ===========
+          '/api/approve/reimburse/list': {
+            page:{
+              type:'number',
+              min: 1,
+              required: true,
+              desc: '页码'
+            },
+            size: {
+              type: 'number',
+              required: true,
+              desc: '页码数据量'
+            },
+            type: {
+              type: 'enum',
+              values: ['apply', 'examine', 'settlement', 'recode'],
+              required: true
+            },
+            keyword: {
+              type: 'string',
+              required: false,
+              desc: '搜索关键词'
+            }
+          },
+          // =========== 账号-手机号 ===========
+          '/api/account/phone/list': {
             page:{
               type:'number',
               min: 1,
@@ -470,7 +659,7 @@ module.exports = app => {
               desc: '搜索关键词'
             }
           },
-          '/account/phone/add': {
+          '/api/account/phone/add': {
             agent: {
               type: 'string',
               required: true,
@@ -522,7 +711,7 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/phone/edit': {
+          '/api/account/phone/edit': {
             id: {
               type: 'number',
               required: true,
@@ -579,15 +768,15 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/phone/delete': {
+          '/api/account/phone/delete': {
             id: {
               type: 'number',
               required: true,
               desc: '主键'
             }
           },
-          // =========== QQ号 ===========
-          '/account/qq/list': {
+          // =========== 账号-QQ号 ===========
+          '/api/account/qq/list': {
             page:{
               type:'number',
               min: 1,
@@ -610,7 +799,7 @@ module.exports = app => {
               desc: '搜索关键词'
             }
           },
-          '/account/qq/add': {
+          '/api/account/qq/add': {
             avatarUrl: {
               type: 'string',
               required: false,
@@ -657,7 +846,7 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/qq/edit': {
+          '/api/account/qq/edit': {
             id: {
               type: 'number',
               required: true,
@@ -709,15 +898,15 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/qq/delete': {
+          '/api/account/qq/delete': {
             id: {
               type: 'number',
               required: true,
               desc: '主键'
             }
           },
-          // =========== 微信号 ===========
-          '/account/weixin/list': {
+          // =========== 账号-微信号 ===========
+          '/api/account/weixin/list': {
             page:{
               type:'number',
               min: 1,
@@ -740,7 +929,7 @@ module.exports = app => {
               desc: '搜索关键词'
             }
           },
-          '/account/weixin/add': {
+          '/api/account/weixin/add': {
             nickName: {
               type: 'string',
               required: false,
@@ -782,7 +971,7 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/weixin/edit': {
+          '/api/account/weixin/edit': {
             id: {
               type: 'number',
               required: true,
@@ -829,15 +1018,15 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/weixin/delete': {
+          '/api/account/weixin/delete': {
             id: {
               type: 'number',
               required: true,
               desc: '主键'
             }
           },
-          // =========== 企鹅号 ===========
-          '/account/qiehao/list': {
+          // =========== 账号-企鹅号 ===========
+          '/api/account/qiehao/list': {
             page:{
               type:'number',
               min: 1,
@@ -865,7 +1054,7 @@ module.exports = app => {
               desc: '搜索关键词'
             }
           },
-          '/account/qiehao/add': {
+          '/api/account/qiehao/add': {
             category: {
               type: 'string',
               required: true,
@@ -947,7 +1136,7 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/qiehao/edit': {
+          '/api/account/qiehao/edit': {
             id: {
               type: 'number',
               required: true,
@@ -1034,15 +1223,15 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/qiehao/delete': {
+          '/api/account/qiehao/delete': {
             id: {
               type: 'number',
               required: true,
               desc: '主键'
             }
           },
-          // =========== 知乎 ===========
-          '/account/zhihu/list': {
+          // =========== 账号-知乎 ===========
+          '/api/account/zhihu/list': {
             page:{
               type:'number',
               min: 1,
@@ -1070,7 +1259,7 @@ module.exports = app => {
               desc: '搜索关键词'
             }
           },
-          '/account/zhihu/add': {
+          '/api/account/zhihu/add': {
             category: {
               type: 'string',
               required: true,
@@ -1152,7 +1341,7 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/zhihu/edit': {
+          '/api/account/zhihu/edit': {
             id: {
               type: 'number',
               required: true,
@@ -1239,14 +1428,123 @@ module.exports = app => {
               desc: '描述'
             }
           },
-          '/account/zhihu/delete': {
+          '/api/account/zhihu/delete': {
             id: {
               type: 'number',
               required: true,
               desc: '主键'
             }
           },
-          
+          // =========== 邮箱-阿里 ===========
+          '/api/email/ali/list': {
+            page:{
+              type:'number',
+              min: 1,
+              required: true,
+              desc: '页码'
+            },
+            size: {
+              type: 'number',
+              required: true,
+              desc: '页码数据量'
+            },
+            status: {
+              type: 'string',
+              required: false,
+              desc: '状态'
+            },
+            keyword: {
+              type: 'string',
+              required: false,
+              desc: '搜索关键词'
+            }
+          },
+          '/api/email/ali/add': {
+            account: {
+              type: 'string',
+              required: true,
+              desc: '账号'
+            },
+            password: {
+              type: 'string',
+              required: true,
+              desc: '密码'
+            },
+            phone: {
+              type: 'string',
+              required: false,
+              desc: '手机号'
+            },
+            cookies: {
+              type: 'string',
+              required: false,
+              desc: 'cookie 字符串'
+            },
+            status: {
+              type: 'string',
+              required: true,
+              desc: '状态'
+            },
+            desc: {
+              type: 'string',
+              required: false,
+              desc: '描述'
+            }
+          },
+          '/api/email/ali/edit': {
+            id: {
+              type: 'number',
+              required: true,
+              desc: '主键'
+            },
+            // account: {
+            //   type: 'string',
+            //   required: true,
+            //   desc: '账号'
+            // },
+            password: {
+              type: 'string',
+              required: false,
+              desc: '密码'
+            },
+            phone: {
+              type: 'string',
+              required: false,
+              desc: '手机号'
+            },
+            cookies: {
+              type: 'string',
+              required: false,
+              desc: 'cookie 字符串'
+            },
+            status: {
+              type: 'string',
+              required: false,
+              desc: '状态'
+            },
+            desc: {
+              type: 'string',
+              required: false,
+              desc: '描述'
+            }
+          },
+          '/api/email/ali/delete': {
+            id: {
+              type: 'number',
+              required: true,
+              desc: '主键'
+            }
+          },
+          '/api/email/ali/email': {
+            id: {
+              type: 'number',
+              required: true,
+              desc: '主键'
+            }
+          },
+
+
+
 
         }
 
